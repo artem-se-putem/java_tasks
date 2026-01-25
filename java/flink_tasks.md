@@ -104,7 +104,7 @@ flink_tasks.md
 Задача  3.4: Среднее значение за окноИспользуя Flink DataStream API, найдите среднее значение чисел за каждое окно в 5 секунд.
 **Вход:**DataStream<Integer> numbers = env.fromElements(10, 20, 30, 40, 50);
 **Подсказка:** Используйте `.aggregate()` или `.process()` с `WindowFunction`---### 
-
+e
 Задача  3.5: Скользящее окно (Sliding Window)Используя Flink DataStream API, подсчитайте сумму за скользящее окно (размер 10 секунд, сдвиг 5 секунд).
 **Вход:**avaDataStream<Integer> numbers = env.fromElements(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 **Подсказка:** Используйте `SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5))`---## Уровень 4: Работа с объектами### 

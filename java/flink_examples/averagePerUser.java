@@ -16,7 +16,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
-public class aggregate_custom_tuple {
+public class averagePerUser {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         
@@ -47,24 +47,28 @@ public class aggregate_custom_tuple {
         // Выводим в консоль (каждое число будет с префиксом номера параллельной задачи)
         // infiniteStream.print();
 events
-    .keyBy(new KeySelector<Tuple2<String, String>, String>() {
+    // .keyBy(x -> x)
+    .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(5)))
+    .process(new ProcessAllWindowFunction<Tuple2<String, String>, Tuple2<String, Double>, TimeWindow>() {
         @Override
-        public String getKey(Tuple2<String, String> value) throws Exception {
-            return value.f0;  // Возвращаем userId
-        }
-    })
-    .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
-    .process(new ProcessWindowFunction<Tuple2<String, String>, Tuple2<String, Integer>, String, TimeWindow>() {
-        @Override
-        public void process(String userId, 
+        public void process(
                            Context context, 
                            Iterable<Tuple2<String, String>> events, 
-                           Collector<Tuple2<String, Integer>> out) throws Exception {
-            int count = 0;
-            for (Tuple2<String, String> event : events) {
-                count++;  // Считаем количество событий
+                           Collector<Tuple2<String, Double>> out) throws Exception {
+            int totalEvents = 0;
+
+            java.util.Set<String> uniqueUsers = new java.util.HashSet<>();
+
+            for (Tuple2<String, String> event: events){
+                totalEvents++;
+                uniqueUsers.add(event.f0);
             }
-            out.collect(Tuple2.of(userId, count));  // Возвращаем userId и количество
+            
+            double averageEventsPerUser = 0.0;
+            if (!uniqueUsers.isEmpty()){
+                averageEventsPerUser = (double) totalEvents / uniqueUsers.size();
+            }
+            out.collect(Tuple2.of("average for user:", averageEventsPerUser));  // Возвращаем userId и количество
         }
     })
     .print();
