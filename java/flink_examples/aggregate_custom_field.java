@@ -1,4 +1,4 @@
-package com.example;
+// public package com.example;
 
 import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.java.functions.KeySelector;
@@ -16,7 +16,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
-public class FlinkTask {
+public class aggregate_custom_field {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         
@@ -47,24 +47,27 @@ public class FlinkTask {
         // Выводим в консоль (каждое число будет с префиксом номера параллельной задачи)
         // infiniteStream.print();
 events
-    .keyBy(new KeySelector<Tuple2<String, String>, String>() {
+    .map(tuple -> 1)  // каждый элемент → 1 (тип: Integer)
+    .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(5)))
+    .aggregate(new AggregateFunction<Integer, Integer, Integer>() {
         @Override
-        public String getKey(Tuple2<String, String> value) throws Exception {
-            return value.f0;  // Возвращаем userId
+        public Integer createAccumulator() {
+            return 0;  // Начальное значение аккумулятора
         }
-    })
-    .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
-    .process(new ProcessWindowFunction<Tuple2<String, String>, Tuple2<String, Integer>, String, TimeWindow>() {
+
         @Override
-        public void process(String userId, 
-                           Context context, 
-                           Iterable<Tuple2<String, String>> events, 
-                           Collector<Tuple2<String, Integer>> out) throws Exception {
-            int count = 0;
-            for (Tuple2<String, String> event : events) {
-                count++;  // Считаем количество событий
-            }
-            out.collect(Tuple2.of(userId, count));  // Возвращаем userId и количество
+        public Integer add(Integer value, Integer accumulator) {
+            return accumulator + value;  // Прибавляем 1 к счетчику
+        }
+
+        @Override
+        public Integer getResult(Integer accumulator) {
+            return accumulator;  // Возвращаем итоговое количество
+        }
+
+        @Override
+        public Integer merge(Integer a, Integer b) {
+            return a + b;  // Объединяем результаты из разных параллельных задач
         }
     })
     .print();
