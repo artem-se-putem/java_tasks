@@ -8,7 +8,8 @@ import org.apache.flink.api.connector.source.util.ratelimit.RateLimiterStrategy;
 import org.apache.flink.connector.datagen.source.DataGeneratorSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
+
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -35,4 +36,21 @@ public class Main {
 
         env.execute("Flink 2.0 Job");
     }
+
+    public class Transaction {    
+    private String userId;
+        private double amount;
+            private String category;    
+            private long timestamp;        
+            public Transaction(String userId, double amount, String category, long timestamp) {        
+                this.userId = userId;        
+                this.amount = amount;       
+                 this.category = category;        
+                 this.timestamp = timestamp;    
+                 }        // геттеры и сеттеры    
+                public String getUserId() { return userId; }    
+                public double getAmount() { return amount; }    
+                public String getCategory() { return category; }    
+                public long getTimestamp() { return timestamp; }
+        }
 }

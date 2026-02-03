@@ -107,9 +107,11 @@ flink_tasks.md
 e
 Задача  3.5: Скользящее окно (Sliding Window)Используя Flink DataStream API, подсчитайте сумму за скользящее окно (размер 10 секунд, сдвиг 5 секунд).
 **Вход:**avaDataStream<Integer> numbers = env.fromElements(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-**Подсказка:** Используйте `SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5))`---## Уровень 4: Работа с объектами### 
+**Подсказка:** Используйте `SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5))`
 
-Задача  4.1: Класс Transactionpublic class Transaction {    private String userId;    private double amount;    private String category;    private long timestamp;        public Transaction(String userId, double amount, String category, long timestamp) {        this.userId = userId;        this.amount = amount;        this.category = category;        this.timestamp = timestamp;    }        // геттеры и сеттеры    public String getUserId() { return userId; }    public double getAmount() { return amount; }    public String getCategory() { return category; }    public long getTimestamp() { return timestamp; }}**
+---## Уровень 4: Работа с объектами### 
+
+Задача  4.1: Класс Transaction public class Transaction {    private String userId;    private double amount;    private String category;    private long timestamp;        public Transaction(String userId, double amount, String category, long timestamp) {        this.userId = userId;        this.amount = amount;        this.category = category;        this.timestamp = timestamp;    }        // геттеры и сеттеры    public String getUserId() { return userId; }    public double getAmount() { return amount; }    public String getCategory() { return category; }    public long getTimestamp() { return timestamp; }}**
 
 Задача :** Используя Flink DataStream API, отфильтруйте транзакции с суммой > 1000 и выведите userId.
 **Вход:**DataStream<Transaction> transactions = env.fromElements(    new Transaction("user1", 500, "food", System.currentTimeMillis()),    new Transaction("user2", 1500, "electronics", System.currentTimeMillis()),    new Transaction("user3", 2000, "food", System.currentTimeMillis()));**Ожидаемый результат:**
