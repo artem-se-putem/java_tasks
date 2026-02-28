@@ -69,7 +69,28 @@ String substr = s1.substring(1, 4);   // с 1 по 3 индекс
 String[] parts = "a,b,c".split(",");
 boolean equal = s1.equals(s2);        // сравнение строк (НЕ ==!)
 boolean eq2 = s1.equalsIgnoreCase("HELLO");
-char ch = s1.charAt(0);               // символ по индексу---
+char ch = s1.charAt(0);               // символ по индексу
+
+// Итерация по строке
+// Способ 1: по индексу
+for (int i = 0; i < s1.length(); i++) {
+    char c = s1.charAt(i);
+    System.out.println(c);
+}
+
+// Способ 2: через toCharArray()
+for (char c : s1.toCharArray()) {
+    System.out.println(c);
+}
+
+// Способ 3: Stream API (Java 8+)
+s1.chars().forEach(c -> System.out.println((char) c));
+
+// Способ 4: Stream API с фильтрацией
+s1.chars()
+    .filter(c -> c != 'l')  // убрать все 'l'
+    .mapToObj(c -> (char) c)
+    .forEach(System.out::print);---
 
 ## 2. Управляющие конструкции
 
